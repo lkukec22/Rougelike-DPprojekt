@@ -41,7 +41,7 @@
 % mentor's title:
 % EN: -prazno- / Asst. Prof.  / Assoc. Prof.       / Full Prof.
 
-\godina{2024}
+\godina{2026}
 \mjesec{rujan}
 % mjesec obrane rada ili projekta
 % year and month of the presentation of the project or paper
@@ -85,7 +85,7 @@
 
 
 \chapter{Uvod}
-Računalne igre su kompleksni softverski sustavi koji zahtijevaju velike količine sadržaja kako bi održali interes igrača. Jedan od ključnih elemenata mnogih igara, posebno onih u žanru \textit{roguelike}, je dizajn razina. Ručno dizaniranje razina je vremenski zahtjevan proces koji ograničava količinu sadržaja koju razvojni tim može proizvesti. Kako bi se riješio ovaj problem, koristi se proceduralno generiranje sadržaja (engl. \textit{Procedural Content Generation - PCG}).
+Računalne igre su kompleksni softverski sustavi koji zahtijevaju velike količine sadržaja kako bi održali interes igrača. Jedan od ključnih elemenata mnogih igara, posebno onih u žanru \textit{roguelike}, je dizajn razina. Ručno dizajniranje razina je vremenski zahtjevan proces koji ograničava količinu sadržaja koju razvojni tim može proizvesti. Kako bi se riješio ovaj problem, koristi se proceduralno generiranje sadržaja (engl. \textit{Procedural Content Generation - PCG}).
 
 Ovaj rad bavi se proceduralnim generiranjem razina u igri korištenjem gramatika grafova (engl. \textit{Graph Grammars}). Motivacija za ovaj pristup leži u mogućnosti definiranja strukture razine putem skupa logičkih pravila, što omogućuje generiranje topološki ispravnih i zanimljivih tlocrta tamnica. Za razliku od jednostavnih nasumičnih algoritama, gramatike grafova nude bolju kontrolu nad strukturom i povezanošću prostorija \cite{dormans2010Adventures}.
 
@@ -94,17 +94,24 @@ Cilj rada je implementirati sustav koji koristi deklarativnu paradigmu (Prolog) 
 \chapter{Teorijska podloga}
 
 \section{Proceduralno generiranje sadržaja}
-Proceduralno generiranje sadržaja (PCG) odnosi se na stvaranje sadržaja igre automatski, putem algoritama, s ograničenim ili neizravnim unosom korisnika \cite{togelius2011SearchBased}. PCG se koristi za generiranje različitih vrsta sadržaja, uključujući teksture, modele, glazbu, priču i razine. U kontekstu ovog rada, fokus je na generiranju razina, odnosno tlocrta prostora (tamnica).
+Proceduralno generiranje sadržaja (PCG) odnosi se na stvaranje sadržaja igre automatski, putem algoritama, s ograničenim ili neizravnim unosom korisnika \cite{togelius2011SearchBased}. PCG se koristi za generiranje različitih vrsta sadržaja, uključujući teksture, modele, glazbu, priču i razine \cite{adams2002AutomaticGeneration}. U kontekstu ovog rada, fokus je na generiranju razina, odnosno tlocrta prostora (tamnica).
+
+Postoje različiti pristupi PCG-u, od jednostavnih nasumičnih algoritama do sofisticiranijih metoda poput gramatika grafova i L-sustava. Sustav Tanagra \cite{smith2010Tanagra} demonstrira kako se reaktivno planiranje može koristiti za interaktivni dizajn razina.
 
 \section{Gramatike grafova}
 Gramatike grafova su formalizam za specificiranje klasa grafova i operacija nad njima. Slično kao što Chomskyjeve gramatike definiraju pravila za generiranje nizova znakova (simbola), gramatike grafova definiraju pravila za generiranje grafova \cite{dormans2010Adventures}.
 
 Gramatika grafa sastoji se od početnog grafa (aksioma) i skupa produkcijskih pravila (pravila prepisivanja). Svako pravilo definira podgraf koji se traži u trenutnom grafu (lijeva strana pravila) i podgraf kojim se on zamjenjuje (desna strana pravila).
 
-Primjena gramatika grafova u generiranju razina omogućuje dizajnerima da definiraju "recente" za strukturu razine. Na primjer, pravilo može reći: "Ako postoji soba s blagom, dodaj sobu s čudovištem ispred nje". Ovo osigurava da generirane razine imaju smisla u kontekstu igrivosti (engl. \textit{gameplay}).
+Primjena gramatika grafova u generiranju razina omogućuje dizajnerima da definiraju "recepte" za strukturu razine \cite{rozenberg1997HandbookGraphGrammars}. Na primjer, pravilo može reći: "Ako postoji soba s blagom, dodaj sobu s čudovištem ispred nje". Ovo osigurava da generirane razine imaju smisla u kontekstu igrivosti (engl. \textit{gameplay}).
+
+\section{L-sustavi}
+L-sustavi (Lindenmayerovi sustavi) su paralelni sustavi za prepisivanje koji su originalno razvijeni za modeliranje rasta biljaka \cite{lindenmayer1968Mathematical}. Sastoje se od abecede simbola, aksioma (početnog niza) i skupa produkcijskih pravila. L-sustavi su srodne s gramatikama grafova i koriste se u proceduralnom generiranju za stvaranje fraktalnih i organskih struktura \cite{prusinkiewicz1990AlgorithmicBeauty}.
+
+U kontekstu generiranja razina, L-sustavi mogu poslužiti za generiranje hodnika i povezivanje prostorija, dok gramatike grafova definiraju topološku strukturu tamnice.
 
 \section{Logičko programiranje i Prolog}
-Prolog (Programming in Logic) je deklarativni programski jezik koji se temelji na predikatnoj logici prvog reda. Program u Prologu sastoji se od činjenica i pravila. Prolog je izuzetno pogodan za rješavanje problema koji uključuju simboličku manipulaciju, pretraživanje prostora stanja i zaključivanje, što ga čini idealnim alatom za implementaciju gramatika grafova.
+Prolog (Programming in Logic) je deklarativni programski jezik koji se temelji na predikatnoj logici prvog reda \cite{bratko2012PrologProgramming}. Program u Prologu sastoji se od činjenica i pravila. Prolog je izuzetno pogodan za rješavanje problema koji uključuju simboličku manipulaciju, pretraživanje prostora stanja i zaključivanje, što ga čini idealnim alatom za implementaciju gramatika grafova.
 
 U ovom radu Prolog se koristi za definiranje pravila gramatike i izvođenje procesa generiranja pretraživanjem i zamjenom simbola (čvorova grafa).
 
@@ -117,6 +124,14 @@ Arhitektura je podijeljena na:
     \item \textbf{Backend (Prolog)}: Odgovoran za logičko generiranje tlocrta tamnice, određivanje tipova soba i njihovih veza.
     \item \textbf{Frontend (Python/PyGame)}: Odgovoran za vizualizaciju, upravljanje stanjem igre (kretanje igrača, borba) i interakciju s korisnikom.
 \end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{slike/arhitektura_dijagram.png}
+    \textbf{[OVDJE UBACITI SLIKU: arhitektura\_dijagram.png]}
+    \caption{Dijagram arhitekture sustava}
+    \label{fig:architecture}
+\end{figure}
 
 \section{Generator u Prologu}
 Jezgra generatora nalazi se u datoteci \mintinline{text}{dungeon_generator.pl}. Generiranje započinje definiranjem gramatike grafa.
@@ -135,7 +150,7 @@ grammar_rule(boss,     []).
 \caption{Pravila gramatike za generiranje soba}
 \label{lst:grammar_rules}
 \end{listing}
-Ova pravila određuju koje nove sobe (čvorove) možemo stvoriti iz postojeće sobe određenog tipa. Na primjer, iz 'start' sobe možemo granati u 'combat' ili 'event' sobu.
+Ova pravila, prikazana u ispisu \ref{lst:grammar_rules}, određuju koje nove sobe (čvorove) možemo stvoriti iz postojeće sobe određenog tipa. Na primjer, iz 'start' sobe možemo granati u 'combat' ili 'event' sobu.
 
 \subsection{Algoritam ekspanzije}
 Proces generiranja koristi predikat \mintinline{text}{expand_dungeon/4}. Algoritam funkcionira na sljedeći način:
@@ -159,7 +174,7 @@ for room in rooms:
 \caption{Integracija Pythona i Prologa}
 \label{lst:python_integration}
 \end{listing}
-Svaka soba se vizualizira kao pločica na ekranu, a hodnici (veze) se iscrtavaju između njih. Dodatno, sadržaj soba (neprijatelji, predmeti) se također generira u Prologu (\mintinline{text}{generate_room_content/1}) i prenosi u Python igru.
+Kao što je prikazano u ispisu \ref{lst:python_integration}, svaka soba se vizualizira kao pločica na ekranu, a hodnici (veze) se iscrtavaju između njih. Dodatno, sadržaj soba (neprijatelji, predmeti) se također generira u Prologu (\mintinline{text}{generate_room_content/1}) i prenosi u Python igru.
 
 \chapter{Kritički osvrt}
 Korištenje gramatika grafova pokazalo se kao robustan pristup za generiranje tamnica.
