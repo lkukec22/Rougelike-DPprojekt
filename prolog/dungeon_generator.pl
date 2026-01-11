@@ -1,5 +1,5 @@
 %% DUNGEON GENERATOR - Graph Grammar Edition
-%% Uses Graph Grammars and L-System concepts to genereta dungeon layout.
+%% Uses Graph Grammars and L-System concepts to generate dungeon layout.
 
 :- module(dungeon_generator, [
     generate_dungeon/2,
