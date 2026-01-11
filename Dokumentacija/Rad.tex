@@ -137,20 +137,20 @@ Arhitektura je podijeljena na:
 Jezgra generatora nalazi se u datoteci \mintinline{text}{dungeon_generator.pl}. Generiranje započinje definiranjem gramatike grafa.
 
 \subsection{Definicija gramatike}
-Gramatika je definirana nizom pravila prepisivanja. Primjer pravila iz koda:
+Gramatika je definirana nizom pravila prepisivanja oblika \mintinline{text}{weighted_rule(ParentType, ChildType, Weight)}. Težina (weight) određuje relativnu vjerojatnost odabira tog tipa sobe. Primjer pravila iz koda:
 \begin{listing}
 \begin{minted}{prolog}
-grammar_rule(start,    [combat, event]).
-grammar_rule(combat,   [combat, treasure]).
-grammar_rule(event,    [treasure, empty]).
-grammar_rule(empty,    [combat]).
-grammar_rule(treasure, [boss]).        
-grammar_rule(boss,     []).
+%% weighted_rule(ParentType, ChildType, Weight)
+weighted_rule(start, combat, 60).    % 60% šansa
+weighted_rule(start, event, 40).     % 40% šansa
+weighted_rule(combat, shop, 10).     % Shop rijedak!
+weighted_rule(treasure, boss, 60).   % Treasure vodi do bossa
+weighted_rule(boss, _, 0).           % Boss je terminalni čvor
 \end{minted}
-\caption{Pravila gramatike za generiranje soba}
+\caption{Probabilistička pravila gramatike s težinama}
 \label{lst:grammar_rules}
 \end{listing}
-Ova pravila, prikazana u ispisu \ref{lst:grammar_rules}, određuju koje nove sobe (čvorove) možemo stvoriti iz postojeće sobe određenog tipa. Na primjer, iz 'start' sobe možemo granati u 'combat' ili 'event' sobu.
+Ova pravila, prikazana u ispisu \ref{lst:grammar_rules}, određuju koje nove sobe (čvorove) možemo stvoriti iz postojeće sobe određenog tipa. Veća težina znači veću vjerojatnost odabira - npr. shop ima samo 10\% šanse, dok combat ima 60\%.
 
 \subsection{Probabilistička gramatika}
 Za razliku od jednostavnih determinističkih gramatika, sustav koristi probabilističku gramatiku s težinama (engl. \textit{weighted rules}). Svako pravilo ima pridruženu težinu koja određuje vjerojatnost njegove primjene.
@@ -210,11 +210,25 @@ Kao što je prikazano u ispisu \ref{lst:python_integration}, svaka soba se vizua
 
 \chapter{Kritički osvrt}
 Korištenje gramatika grafova pokazalo se kao robustan pristup za generiranje tamnica.
+
 \section{Prednosti}
-Glavna prednost je odvajanje strukture (gramatike) od algoritma generiranja. Promjenom samo nekoliko linija koda u \mintinline{text}{grammar_rule} predikatima, možemo drastično promijeniti "osjećaj" i topologiju tamnice, npr. stvarati linearne hodnike ili razgranate labirinte. Također, Prologova \textit{backtracking} priroda olakšava implementaciju ograničenja.
+\begin{itemize}
+    \item \textbf{Odvajanje strukture od algoritma}: Promjenom samo \mintinline{text}{weighted_rule} predikata možemo drastično promijeniti topologiju tamnice (linearni hodnici vs. razgranati labirinti).
+    \item \textbf{Fino podešavanje balansa}: Težine omogućuju kontrolu rijetkih soba (shop 10\%) bez mijenjanja algoritma.
+    \item \textbf{Deklarativnost}: Prolog prirodno podržava backtracking što olakšava implementaciju ograničenja.
+    \item \textbf{Modularnost}: Generator je potpuno odvojen od vizualizacije - može se koristiti s bilo kojim game engineom.
+\end{itemize}
 
 \section{Nedostaci}
-Glavni nedostatak je potencijalna eksponencijalna složenost ako se pravila ne ograniče. Također, komunikacija između Prologa i Pythona može uvesti određeno kašnjenje (overhead), iako za generiranje razina to nije kritično jer se događa samo jednom pri učitavanju.
+\begin{itemize}
+    \item \textbf{Složenost}: Potencijalna eksponencijalna složenost ako se pravila ne ograniče (riješeno s safety break od 500 iteracija).
+    \item \textbf{Komunikacijski overhead}: PySwip sučelje između Pythona i Prologa uvodi određeno kašnjenje, iako za jednokratno generiranje to nije kritično.
+    \item \textbf{Debugging}: Teže pronalaženje grešaka u Prolog kodu nego u imperativnim jezicima.
+    \item \textbf{Ovisnost o SWI-Prologu}: Zahtijeva instalaciju Prologa na korisničkom sustavu.
+\end{itemize}
+
+\section{Mogući nastavak}
+Projekt bi se mogao proširiti implementacijom lock-and-key mehanike, dinamičkim podešavanjem težine prema napretku igrača, ili vizualnim prikazom neprijatelja pomoću spriteova.
 
 \chapter{Prikaz rada aplikacije}
 U nastavku su prikazani primjeri generiranih tamnica.
