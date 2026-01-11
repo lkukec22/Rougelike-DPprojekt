@@ -1,90 +1,97 @@
 # Roguelike Dungeon Generator
 
-Deklarativni generator dungeona za roguelike igru koristeći **Prolog** za constraint solving i **Pygame** za vizualizaciju.
+**Deklarativni generator dungeona** koji koristi **Prolog** za inteligentnu generaciju topologije i sadržaja, te **Pygame** za vizualizaciju i gameplay.
 
-## 🎯 Opis projekta
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
+![Prolog](https://img.shields.io/badge/SWI--Prolog-9.x-red?logo=prolog)
+![License](https://img.shields.io/badge/License-GPL--3.0-green)
 
-Ovaj projekt demonstrira upotrebu deklarativnog programiranja (Prolog) za proceduralno generiranje sadržaja u igrama. Umjesto imperativnog pristupa, definiramo **što** želimo (constrainte), a Prolog sam pronalazi rješenje.
+---
 
-## 🛠️ Tehnologije
+## Vizija i Cilj
 
-- **SWI-Prolog** - Logičko programiranje, constraint solving
-- **PySwip** - Python-Prolog bridge
-- **Pygame** - Vizualizacija i gameplay
+Ovaj projekt istražuje moć **logičkog programiranja** u domeni proceduralnog generiranja sadržaja (PCG). Za razliku od klasičnih algoritama, koristimo **gramatike grafova** i **ograničenja (constraints)** kako bismo osigurali da svaki generirani dungeon bude:
+1.  **Strukturno ispravan** (povezan graf, bez izoliranih soba).
+2.  **Balansiran** (pametan raspored neprijatelja, shopova i blaga).
+3.  **Igrabilan** (zajamčen put od starta do bossa).
 
-## 📁 Struktura projekta
+---
 
-```
+## Tehnološki Stog
+
+-   **SWI-Prolog**: Core motor za generiranje. Koristi dinamičke predikate i backtracking.
+-   **PySwip**: Most koji omogućuje Pythonu da izvršava Prolog upite u stvarnom vremenu.
+-   **Pygame**: Lagan i brz engine za 2D renderiranje i rukovanje unosima igrača.
+
+---
+
+## Struktura Projekta
+
+```bash
 Rougelike/
 ├── prolog/
-│   └── dungeon_generator.pl   # Prolog generator s constraintima
+│   └── dungeon_generator.pl   # Logika generacije (Graph Grammar)
 ├── src/
-│   ├── main.py                # Pygame aplikacija
-│   └── prolog_bridge.py       # PySwip sučelje
-├── predlozak/                 # LaTeX dokumentacija
+│   ├── main.py                # Ulazna točka aplikacije
+│   ├── player.py              # Logika igrača i statistike
+│   ├── renderer.py            # Vizualizacija dungeona i UI
+│   └── prolog_bridge.py       # Komunikacijsko sučelje s Prologom
+├── dokumentacija.md           # Detaljna tehnička dokumentacija
 └── README.md
 ```
 
-## 🚀 Pokretanje
+---
 
-### Preduvjeti
+## Kako Pokrenuti?
 
+### 1. Preduvjeti
+Potrebno je imati instaliran [SWI-Prolog](https://www.swi-prolog.org/download/stable) i dodan u sistemski PATH.
+
+### 2. Instalacija ovisnosti
 ```bash
-# Instaliraj SWI-Prolog (mora biti u PATH)
-# https://www.swi-prolog.org/download/stable
-
-# Instaliraj Python pakete
 pip install pyswip pygame
 ```
 
-### Pokretanje aplikacije
-
+### 3. Pokretanje
 ```bash
-cd src
-python main.py
+python src/main.py
 ```
 
-## 🎮 Kontrole
+---
 
-| Tipka | Akcija |
-|-------|--------|
-| W / ↑ | Gore (North) |
-| S / ↓ | Dolje (South) |
-| A / ← | Lijevo (West) |
-| D / → | Desno (East) |
-| R | Regeneriraj dungeon |
-| ESC | Izlaz |
+## Kontrole i Gameplay
 
-## 🧠 Prolog predikati
+| Tipka | Akcija | Opis |
+| :--- | :--- | :--- |
+| **W, A, S, D** | Kretanje | Pomakni igrača po sobama dungeona |
+| **Strelica** | Kretanje | Alternativne tipke za kretanje |
+| **H** | Heal | Koristi napitak za zdravlje (ako ga imaš u inventoryju) |
+| **R** | Regeneriraj | Stvori potpuno novi dungeon s novim seed-om |
+| **ESC** | Izlaz | Zatvori aplikaciju |
 
-### Glavni predikati
+### Mehanike
+- **Borba**: Automatska pri ulasku u sobu s neprijateljima. Šteta ovisi o tipu neprijatelja.
+- **Loot**: Skupljaj zlato i predmete (napitke) nakon što očistiš sobu.
+- **Pobjeda**: Pronađi i porazi bossa u crvenoj sobi.
 
-| Predikat | Opis |
-|----------|------|
-| `generate_dungeon/3` | Generira dungeon (Seed, NumRooms, Result) |
-| `room/3` | Definicija sobe (ID, X, Y) |
-| `connected/3` | Veza između soba (From, To, Direction) |
-| `room_type/2` | Tip sobe (RoomID, Type) |
+---
 
-### Constraint pravila
+## Logika Generacije
 
-1. **Točno jedna start soba**
-2. **Točno jedna boss soba**
-3. **Postoji put od start do boss**
-4. **Minimalna udaljenost start-boss ≥ 2**
-5. **Treasure sobe su u dead-end pozicijama**
+Sustav koristi **Graph Grammar** pristup:
+- Svaki dungeon počinje od `start` čvora.
+- Pravila ekspanzije (npr. `combat -> treasure`) definiraju kako se dungeon grana.
+- **Constraints** osiguravaju minimalnu udaljenost od starta do bossa i smještaj blaga u slijepe ulice (dead-ends).
 
-## 📊 Tipovi soba
+### Boje Soba
+- 🟢 **Start**: Početna točka heroja.
+- 🔴 **Boss**: Finalni izazov (Victory uvjet).
+- 🟠 **Combat**: Sobe s neprijateljima.
+- 🟡 **Treasure**: Bogat loot, obično u slijepim ulicama.
+- 🔵 **Shop**: Sigurna zona za trgovinu.
+- 🟣 **Event**: Nepredviđeni susreti.
 
-| Tip | Boja | Opis |
-|-----|------|------|
-| start | 🟢 Zelena | Početna soba |
-| boss | 🔴 Crvena | Boss soba |
-| combat | 🟠 Narančasta | Borbena soba |
-| treasure | 🟡 Zlatna | Soba s blagom |
-| shop | 🔵 Plava | Trgovina |
-| event | 🟣 Ljubičasta | Event soba |
+---
 
-## 📝 Licenca
-
-GPL-3.0
+## Licenca
+Ovaj projekt je licenciran pod **GPL-3.0** licencom.
