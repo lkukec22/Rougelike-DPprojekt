@@ -3,7 +3,7 @@
 ENEMY_DAMAGE = {
     'goblin': 5, 'orc': 10, 'skeleton': 8, 'slime': 3,
     'bat': 4, 'spider': 6, 'dragon': 30, 'demon': 25,
-    'lich': 35, 'golem': 20
+    'lich': 35, 'golem': 20, 'ghost': 7
 }
 
 
@@ -13,6 +13,16 @@ ITEM_HEAL = {
 
 
 class Player:
+    """
+    Klasa koja predstavlja igrača u igri.
+    
+    Attributes:
+        max_hp (int): Maksimalni HP igrača.
+        hp (int): Trenutni HP igrača.
+        gold (int): Količina zlata.
+        inventory (list): Lista predmeta u inventaru.
+        defeated_boss (bool): Je li igrač pobijedio bossa.
+    """
     
     def __init__(self):
         self.max_hp = 100

@@ -14,21 +14,87 @@
 :- use_module(library(random)).  % CRITICAL: Needed for random_permutation, random_member
 :- use_module(library(lists)).   % Needed for append, member
 
-%% Dynamic predicates
+%% Dynamic predicates - must be declared before use
+:- dynamic room/3.
+:- dynamic room_type/2.
+:- dynamic connected/3.
+:- dynamic room_content/2.
+:- dynamic claimed_pos/2.
 
 
+%% PROBABILISTIC GRAPH GRAMMAR RULES
+%% weighted_rule(ParentType, ChildType, Weight)
+%% Weight određuje relativnu vjerojatnost odabira tog tipa.
+%% Veći weight = veća šansa za spawn.
 
-%% GRAPH GRAMMAR RULES
-%% Defines how room types expand into other room types.
+%% Iz START sobe - combat čest, event rjeđi
+weighted_rule(start, combat, 60).
+weighted_rule(start, event, 40).
 
+%% Iz COMBAT sobe - najčešće opet combat, ponekad treasure, rijetko shop
+weighted_rule(combat, combat, 50).
+weighted_rule(combat, treasure, 30).
+weighted_rule(combat, shop, 10).      % Shop je rijedak!
+weighted_rule(combat, event, 10).
 
-grammar_rule(start,    [combat, event]).
-grammar_rule(combat,   [combat, treasure]).
-grammar_rule(event,    [treasure, empty]).
-grammar_rule(empty,    [combat]).
-grammar_rule(shop,     [combat]).
-grammar_rule(treasure, [boss]).        
-grammar_rule(boss,     []).            
+%% Iz EVENT sobe
+weighted_rule(event, treasure, 40).
+weighted_rule(event, empty, 30).
+weighted_rule(event, combat, 30).
+
+%% Iz EMPTY sobe
+weighted_rule(empty, combat, 70).
+weighted_rule(empty, event, 30).
+
+%% Iz SHOP sobe - samo combat (kupili ste, sada se borite)
+weighted_rule(shop, combat, 100).
+
+%% Iz TREASURE sobe - vodi prema bossu ili još treasurea
+weighted_rule(treasure, boss, 60).
+weighted_rule(treasure, combat, 40).
+
+%% BOSS je terminalni čvor - nema djece
+weighted_rule(boss, _, 0).
+
+%% WEIGHTED SELECTION ALGORITHM
+
+%% get_weighted_types(+ParentType, -SelectedTypes)
+%% Odabire tipove djece prema težinama koristeći roulette wheel selekciju.
+get_weighted_types(ParentType, SelectedTypes) :-
+    findall(Type-Weight, (weighted_rule(ParentType, Type, Weight), Weight > 0), Pairs),
+    (   Pairs = []
+    ->  SelectedTypes = []
+    ;   select_multiple_weighted(Pairs, 2, SelectedTypes)  % Odaberi do 2 tipa
+    ).
+
+%% select_multiple_weighted(+Pairs, +N, -Selected)
+%% Odabire N tipova prema težinama (s ponavljanjem moguće).
+select_multiple_weighted(_, 0, []) :- !.
+select_multiple_weighted(Pairs, N, [Type|Rest]) :-
+    N > 0,
+    select_by_weight(Pairs, Type),
+    N1 is N - 1,
+    select_multiple_weighted(Pairs, N1, Rest).
+
+%% select_by_weight(+Pairs, -Selected)
+%% Roulette wheel selekcija - veći weight = veća šansa.
+select_by_weight(Pairs, Selected) :-
+    pairs_keys_values(Pairs, Types, Weights),
+    sum_list(Weights, Total),
+    random(0, Total, R),
+    pick_by_accumulated(Types, Weights, R, 0, Selected).
+
+%% pick_by_accumulated(+Types, +Weights, +Target, +Acc, -Selected)
+pick_by_accumulated([Type|_], [Weight|_], Target, Acc, Type) :-
+    NewAcc is Acc + Weight,
+    Target < NewAcc, !.
+pick_by_accumulated([_|Types], [Weight|Weights], Target, Acc, Selected) :-
+    NewAcc is Acc + Weight,
+    pick_by_accumulated(Types, Weights, Target, NewAcc, Selected).
+
+%% Legacy grammar_rule/2 za kompatibilnost (koristi weighted verziju)
+grammar_rule(Type, Children) :-
+    get_weighted_types(Type, Children).
 
 
 generate_dungeon(Seed, NumRooms) :-

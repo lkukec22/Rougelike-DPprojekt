@@ -111,6 +111,7 @@ class DungeonRenderer:
             self._render_victory()
             return
         
+        title = self.title_font.render("Roguelike Dungeon Generator", True, COLOR_TEXT)
         self.screen.blit(title, (20, 20))
         
         subtitle = self.font.render("Prolog + PySwip + Pygame", True, (150, 150, 150))

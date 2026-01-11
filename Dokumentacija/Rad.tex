@@ -152,12 +152,44 @@ grammar_rule(boss,     []).
 \end{listing}
 Ova pravila, prikazana u ispisu \ref{lst:grammar_rules}, određuju koje nove sobe (čvorove) možemo stvoriti iz postojeće sobe određenog tipa. Na primjer, iz 'start' sobe možemo granati u 'combat' ili 'event' sobu.
 
+\subsection{Probabilistička gramatika}
+Za razliku od jednostavnih determinističkih gramatika, sustav koristi probabilističku gramatiku s težinama (engl. \textit{weighted rules}). Svako pravilo ima pridruženu težinu koja određuje vjerojatnost njegove primjene.
+
+\begin{listing}
+\begin{minted}{prolog}
+%% weighted_rule(ParentType, ChildType, Weight)
+weighted_rule(start, combat, 60).    % 60% šansa
+weighted_rule(start, event, 40).     % 40% šansa
+
+weighted_rule(combat, combat, 50).   % Combat čest
+weighted_rule(combat, treasure, 30).
+weighted_rule(combat, shop, 10).     % Shop rijedak!
+weighted_rule(combat, event, 10).
+
+weighted_rule(treasure, boss, 60).
+weighted_rule(treasure, combat, 40).
+\end{minted}
+\caption{Probabilistička pravila gramatike s težinama}
+\label{lst:weighted_rules}
+\end{listing}
+
+Kao što je prikazano u ispisu \ref{lst:weighted_rules}, shop sobe imaju samo 10\% šanse za pojavljivanje, dok su combat sobe najčešće (50\%). Ovo omogućuje fino podešavanje balansa igre.
+
+\subsection{Algoritam selekcije}
+Odabir tipa sobe koristi \textit{roulette wheel} algoritam selekcije. Predikat \mintinline{text}{select_by_weight/2} računa kumulativne težine i odabire tip proporcionalno njegovoj težini:
+\begin{enumerate}
+    \item Izračunaj ukupnu sumu težina svih pravila.
+    \item Generiraj nasumični broj $R \in [0, Total)$.
+    \item Iteriraj kroz pravila kumulativno dok suma ne prijeđe $R$.
+    \item Odaberi pravilo koje je "prešlo" granicu.
+\end{enumerate}
+
 \subsection{Algoritam ekspanzije}
 Proces generiranja koristi predikat \mintinline{text}{expand_dungeon/4}. Algoritam funkcionira na sljedeći način:
 \begin{enumerate}
     \item Započinje s početnom sobom (tip \textit{start}) u redu čekanja.
-    \item Uzima sobu iz reda, provjerava njen tip i dohvaća primjenjiva pravila gramatike.
-    \item Za svaki novi tip sobe iz pravila, pokušava pronaći slobodan susjedni prostor na rešetki (grid) pozivom \mintinline{text}{spawn_neighbors/9}.
+    \item Uzima sobu iz reda, provjerava njen tip i dohvaća tipove djece koristeći probabilističku selekciju.
+    \item Za svaki odabrani tip sobe, pokušava pronaći slobodan susjedni prostor na rešetki (grid) pozivom \mintinline{text}{spawn_neighbors/9}.
     \item Ako je prostor slobodan, nova soba se stvara, povezuje s roditeljem i dodaje u red za daljnju ekspanziju.
     \item Proces se ponavlja dok se ne dosegne željeni broj soba.
 \end{enumerate}

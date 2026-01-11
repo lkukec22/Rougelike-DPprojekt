@@ -314,29 +314,65 @@ generate_dungeon(Seed, NumRooms, Result) :-
     collect_result(Result).
 ```
 
-### 4.4 Gramatička pravila (Production Rules)
+### 4.4 Probabilistička gramatička pravila (Weighted Rules)
 
-Sustav koristi produkcijska pravila oblika `Tip -> [MogućiSljedećiTipovi]` s vjerojatnostima. Ovo definira topologiju grafa.
+Sustav koristi **probabilističku gramatiku** s težinama. Svako pravilo ima pridruženu težinu koja određuje vjerojatnost njegove primjene.
 
 ```prolog
-%% grammar_rule(CurrentType, Probability, PossibleNextList)
-grammar_rule(start,    1.0, [combat, event]).
-grammar_rule(combat,   0.6, [combat, treasure]).
-grammar_rule(combat,   0.4, [shop, empty]).
-grammar_rule(event,    0.5, [combat, empty]).
-grammar_rule(event,    0.5, [treasure]).
-grammar_rule(empty,    0.7, [combat]).
-grammar_rule(treasure, 1.0, [boss]).        % Treasure vodi do bossa
-grammar_rule(boss,     1.0, []).            % Boss je terminalni simbol
+%% weighted_rule(ParentType, ChildType, Weight)
+%% Veći weight = veća šansa za spawn
+
+%% Iz START sobe
+weighted_rule(start, combat, 60).    % 60% šansa
+weighted_rule(start, event, 40).     % 40% šansa
+
+%% Iz COMBAT sobe - shop je rijedak!
+weighted_rule(combat, combat, 50).   % 50% - najčešći
+weighted_rule(combat, treasure, 30). % 30%
+weighted_rule(combat, shop, 10).     % 10% - rijedak!
+weighted_rule(combat, event, 10).    % 10%
+
+%% Iz TREASURE sobe
+weighted_rule(treasure, boss, 60).   % Vodi prema bossu
+weighted_rule(treasure, combat, 40).
+
+%% BOSS je terminalni čvor
+weighted_rule(boss, _, 0).
 ```
+
+#### Roulette Wheel Selekcija
+
+Odabir tipa sobe koristi **roulette wheel** algoritam:
+
+```prolog
+select_by_weight(Pairs, Selected) :-
+    pairs_keys_values(Pairs, Types, Weights),
+    sum_list(Weights, Total),
+    random(0, Total, R),
+    pick_by_accumulated(Types, Weights, R, 0, Selected).
+```
+
+**Algoritam:**
+1. Izračunaj ukupnu sumu težina (npr. 100)
+2. Generiraj nasumični broj R ∈ [0, 100)
+3. Iteriraj kroz pravila kumulativno
+4. Odaberi pravilo čija kumulativna suma prelazi R
+
+**Primjer za combat sobu (Total = 100):**
+| Tip | Weight | Kumulativno | Odabrano ako R... |
+|-----|--------|-------------|-------------------|
+| combat | 50 | 50 | R < 50 |
+| treasure | 30 | 80 | 50 ≤ R < 80 |
+| shop | 10 | 90 | 80 ≤ R < 90 |
+| event | 10 | 100 | 90 ≤ R < 100 |
 
 ### 4.5 Algoritam ekspanzije
 
 Algoritam koristi red (queue) za BFS ekspanziju grafa:
 
 1.  Uzmimo sobu s početka reda.
-2.  Dohvatimo odgovarajuće gramatičko pravilo (`grammar_rule`).
-3.  Za svaki tip sobe iz desne strane pravila (`PossibleNext`):
+2.  Dohvatimo tipove djece koristeći **probabilističku selekciju**.
+3.  Za svaki odabrani tip sobe:
     *   Odredi nasumičan slobodan smjer (gore, dolje, lijevo, desno).
     *   Ako je mjesto slobodno, instanciraj novu sobu tog tipa.
     *   Poveži staru i novu sobu (dodaj brid u graf).

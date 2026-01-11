@@ -51,22 +51,6 @@ class PrologBridge:
             'room_contents': self._get_all_room_contents()
         }
     
-    def _parse_dungeon_result(self, prolog_result) -> dict:
-        """
-        Parsira Prolog rezultat u Python rječnik.
-        
-        Prolog vraća strukturu: dungeon([room(...), ...], [connection(...), ...])
-        """
-        rooms = self._get_rooms()
-        connections = self._get_connections()
-        room_contents = self._get_all_room_contents()
-        
-        return {
-            'rooms': rooms,
-            'connections': connections,
-            'room_contents': room_contents
-        }
-    
     def _get_rooms(self) -> list:
         rooms = []
         query_results = list(self.prolog.query("get_rooms(Rooms)"))

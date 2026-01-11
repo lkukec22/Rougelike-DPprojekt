@@ -64,3 +64,18 @@ RadniNacrt.tex
 *.pyc
 mdfiles/
 predlozak/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+coverage.xml
+
+# LaTeX additional
+*.run.xml
+_minted*/
+
+# Environment
+.env
+.env.local
