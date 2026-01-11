@@ -13,6 +13,7 @@
 
 :- use_module(library(random)).  % CRITICAL: Needed for random_permutation, random_member
 :- use_module(library(lists)).   % Needed for append, member
+:- use_module(library(pairs)).   % Needed for pairs_keys_values
 
 %% Dynamic predicates - must be declared before use
 :- dynamic room/3.

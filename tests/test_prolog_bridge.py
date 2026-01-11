@@ -95,10 +95,12 @@ class TestPrologBridge:
         bridge.clear()
         result2 = bridge.generate_dungeon(seed=222, num_rooms=5)
         
-        # Barem nešto bi trebalo biti drugačije
         rooms1 = [(r['x'], r['y']) for r in result1['rooms']]
         rooms2 = [(r['x'], r['y']) for r in result2['rooms']]
-        # Ne moraju biti potpuno različiti, ali testiramo da rade
+        
+        # Različiti seedovi bi trebali dati različite dungeonove
+        assert rooms1 != rooms2 or result1['connections'] != result2['connections'], \
+            "Different seeds should produce different dungeons"
 
 
 class TestPrologBridgeEdgeCases:
