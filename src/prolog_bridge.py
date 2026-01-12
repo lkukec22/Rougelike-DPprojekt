@@ -5,7 +5,6 @@ Ovaj modul pruža Python sučelje za pozivanje Prolog predikata
 i parsiranje rezultata u Python strukture podataka.
 """
 
-
 from pathlib import Path
 from pyswip import Prolog
 
@@ -17,17 +16,12 @@ class PrologBridge:
         self._load_prolog_files()
     
     def _load_prolog_files(self):
-
         current_dir = Path(__file__).parent.parent
         prolog_dir = current_dir / "prolog"
-        
-
         generator_path = prolog_dir / "dungeon_generator.pl"
         if generator_path.exists():
-
             path_str = str(generator_path).replace("\\", "/")
             self.prolog.consult(path_str)
-            print(f"[PrologBridge] Učitan: {generator_path.name}")
         else:
             raise FileNotFoundError(f"Prolog datoteka nije pronađena: {generator_path}")
     
@@ -36,13 +30,10 @@ class PrologBridge:
         Generira dungeon s danim parametrima.
         """
         query = f"generate_dungeon({seed}, {num_rooms})"
-        print(f"[DEBUG] Running query: {query}")
         
         try:
-            results = list(self.prolog.query(query))
-            print(f"[DEBUG] Prolog generation finished.")
-        except Exception as e:
-            print(f"[ERROR] Prolog query failed: {e}")
+            list(self.prolog.query(query))
+        except Exception:
             return {'rooms': [], 'connections': [], 'room_contents': {}}
             
         return {
@@ -110,24 +101,5 @@ class PrologBridge:
         
         return contents
     
-    def get_room_content(self, room_id: int) -> dict:
-        """Dohvaća sadržaj specifične sobe."""
-        query = f"get_room_content({room_id}, Content)"
-        query_results = list(self.prolog.query(query))
-        
-        if query_results:
-            content = query_results[0]['Content']
-            return {
-                'description': str(content[0]),
-                'enemies': [str(e) for e in content[1]],
-                'items': [str(i) for i in content[2]],
-                'gold': int(content[3])
-            }
-        return None
-    
     def clear(self):
-        """Briše trenutni dungeon iz Prologa."""
         list(self.prolog.query("clear_dungeon"))
-
-
-

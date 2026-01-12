@@ -1,11 +1,8 @@
-
-
 ENEMY_DAMAGE = {
     'goblin': 5, 'orc': 10, 'skeleton': 8, 'slime': 3,
     'bat': 4, 'spider': 6, 'dragon': 30, 'demon': 25,
     'lich': 35, 'golem': 20, 'ghost': 7
 }
-
 
 ITEM_HEAL = {
     'health_potion': 25, 'large_health_potion': 50, 'elixir': 100
@@ -37,15 +34,12 @@ class Player:
         return self.hp > 0
     
     def heal(self, amount):
-        """Heal HP up to max."""
         self.hp = min(self.max_hp, self.hp + amount)
     
     def add_gold(self, amount):
-        """Add gold."""
         self.gold += amount
     
     def add_item(self, item):
-        """Add item to inventory."""
         if item not in ['nothing', 'torch', 'arrows', 'bomb', 'armor', 'magic_ring', 'key']:
             self.inventory.append(item)
     

@@ -7,30 +7,37 @@
 % uncomment the above line if writing in English
 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{lipsum}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{tikz}
 
-\vrstaRada{\diplomski}
+\vrstaRada{\projekt}
 % \zavrsni ili \diplomski ili \seminar ili \projekt
 % type of the paper:
 % \seminar is a seminar/term paper
 % \projekt is a project
 
-\title{Generiranje razina igre korištenjem gramatika grafova}
-\predmet{}
+\title{GENERIRANJE RAZINA IGRE KORI\v{S}TENJEM GRAMATIKE GRAFOVA}
+\predmet{Baze podataka i baze znanja}
 % ostaviti prazno ako \vrstaRada nije \projekt ili \seminar
 % \predmetBP ili \predmetDP ili \predmetTBP ili \predmetVAS ili \predmetUUI
 % leave it empty if \vrstaRada is not a \projekt or \seminar
 % \predmetBP - Databases 1
 % \predmetVAS - Multiagent Systems
 
-\author{Ime Prezime} 
+\author{Luka Kukec} 
 % ime i prezime studenta/studentice
 % name and surname of the author
-\spolStudenta{\zensko} 
+\spolStudenta{\musko} 
 % \zensko ili \musko
 % student's gender for grammar purposes: \zensko = F or \musko = M
 
-\mentor{Titula Ime Prezime}
+\mentor{Bogdan Okreša Đurić}
 % ime i prezime mentora
 % name and surname of the mentor
 \spolMentora{\musko} 
@@ -42,15 +49,15 @@
 % EN: -prazno- / Asst. Prof.  / Assoc. Prof.       / Full Prof.
 
 \godina{2026}
-\mjesec{rujan}
+\mjesec{siječanj}
 % mjesec obrane rada ili projekta
 % year and month of the presentation of the project or paper
 
-\indeks{35918/07–R}
+\indeks{0016158557}
 % broj indeksa ili JMBAG
 % author's ID
 
-\smjer{Informacijsko i programsko inženjerstvo}
+\smjer{Baze podataka i baze znanja}
 % (ili:
 %     Informacijski sustavi, 
 %     Poslovni sustavi, 
@@ -72,6 +79,11 @@
 
 \acrodef{VAS}{višeagentni sustav}
 
+% Podrška za UTF-8 znakove u PDF metapodacima (naslov, bookmarks)
+\hypersetup{
+    pdfencoding=auto,
+    unicode=true
+}
 
 \begin{document}
 
@@ -127,8 +139,7 @@ Arhitektura je podijeljena na:
 
 \begin{figure}[h!]
     \centering
-    % \includegraphics[width=0.9\textwidth]{slike/arhitektura_dijagram.png}
-    \textbf{[OVDJE UBACITI SLIKU: arhitektura\_dijagram.png]}
+    \includegraphics[width=0.9\textwidth]{slike/arhitektura_dijagram.png}
     \caption{Dijagram arhitekture sustava}
     \label{fig:architecture}
 \end{figure}
@@ -235,9 +246,8 @@ U nastavku su prikazani primjeri generiranih tamnica.
 
 \begin{figure}[h!]
     \centering
-    % \includegraphics[width=0.8\textwidth]{slike/dungeon_example.png}
-    \textbf{[OVDJE UBACITI SLIKU GENERIRANE TAMNICE]}
-    \caption{Primjer generirane tamnice s 20 soba}
+    \includegraphics[width=0.8\textwidth]{slike/dungeon_example.png}
+    \caption{Primjer generirane tamnice}
     \label{fig:dungeon_example}
 \end{figure}
 

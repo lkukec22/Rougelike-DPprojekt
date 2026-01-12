@@ -56,6 +56,7 @@ Thumbs.db
 RadniNacrt.tex
 *.bcf
 *.minted
+*.lol
 
 # Prolog
 *.plt
@@ -71,6 +72,8 @@ predlozak/
 htmlcov/
 *.cover
 coverage.xml
+tests/
+
 
 # LaTeX additional
 *.run.xml
