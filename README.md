@@ -70,16 +70,6 @@ Za detaljan opis teorijske podloge i implementacije, pogledajte [Dokumentacija/R
 
 > **Napomena**: SWI-Prolog mora biti dodan u sistemski PATH. Instalacija to obično napravi automatski.
 
-### 2. Instalacija Python ovisnosti
-```bash
-pip install -r requirements.txt
-```
-
-Ili ručno:
-```bash
-pip install pyswip pygame
-```
-
 #### Linux instalacija SWI-Prologa
 
 **Ubuntu/Debian:**
@@ -92,13 +82,45 @@ sudo apt install swi-prolog
 sudo pacman -S swi-prolog
 ```
 
-### 3. Pokretanje
+### 2. Automatska instalacija i pokretanje
+
+**Linux (preporučeno):**
 ```bash
-cd Rougelike
+python3 setup_venv.py
+```
+Skripta kreira virtualno okruženje, instalira ovisnosti i pokreće igru.
+
+**Windows:**
+```bash
+python setup.py
+```
+
+### 3. Ponovno pokretanje igre
+
+**Linux:**
+```bash
+./venv/bin/python src/main.py
+```
+
+**Windows:**
+```bash
 python src/main.py
 ```
 
-### 4. Testiranje (opcionalno)
+### 4. Ručna instalacija (opcionalno)
+
+```bash
+# Windows
+pip install -r requirements.txt
+python src/main.py
+
+# Linux (koristite venv)
+python3 -m venv venv
+./venv/bin/pip install -r requirements.txt
+./venv/bin/python src/main.py
+```
+
+### 5. Testiranje (opcionalno)
 ```bash
 # Python testovi
 python -m pytest tests/ -v

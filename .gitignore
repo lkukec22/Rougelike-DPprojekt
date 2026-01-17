@@ -82,3 +82,4 @@ _minted*/
 # Environment
 .env
 .env.local
+*.txt
