@@ -13,34 +13,24 @@ from renderer import DungeonRenderer, WINDOW_WIDTH, WINDOW_HEIGHT
 
 
 class Game:
-    """
-    Main game class.
-    """
     
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption("Roguelike Dungeon Generator")
         self.clock = pygame.time.Clock()
-        
-
         self.bridge = PrologBridge()
-        
-
         self.seed = random.randint(1, 100000)
         self.player = None
         self._generate_new_dungeon()
     
     def _generate_new_dungeon(self):
-        print(f"\nGenerating dungeon (seed={self.seed})...")
         self.bridge.clear()
         self.player = Player()
         dungeon_data = self.bridge.generate_dungeon(seed=self.seed, num_rooms=7)
         self.renderer = DungeonRenderer(self.screen, dungeon_data, self.player)
-        print(f"Generated {len(dungeon_data['rooms'])} rooms.")
     
     def run(self):
-        """Main game loop."""
         running = True
         
         while running:
@@ -81,12 +71,6 @@ class Game:
 
 
 def main():
-    """Application entry point."""
-    print("=" * 60)
-    print("ROGUELIKE DUNGEON GENERATOR")
-    print("Prolog + PySwip + Pygame")
-    print("=" * 60)
-    
     game = Game()
     game.run()
 

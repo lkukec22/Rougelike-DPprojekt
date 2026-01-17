@@ -3,8 +3,7 @@ Dungeon Renderer module - Handles all Pygame rendering and game logic.
 """
 
 import pygame
-from player import Player, ENEMY_DAMAGE, ITEM_HEAL
-
+from player import ENEMY_DAMAGE, ITEM_HEAL
 
 
 WINDOW_WIDTH = 1024
@@ -17,22 +16,22 @@ CORRIDOR_WIDTH = 8
 
 
 ROOM_COLORS = {
-    'start': (50, 205, 50),      # Zelena
-    'boss': (220, 20, 60),       # Crvena
-    'combat': (255, 140, 0),     # Narančasta
-    'treasure': (255, 215, 0),   # Zlatna
-    'shop': (65, 105, 225),      # Plava
-    'event': (148, 0, 211),      # Ljubičasta
-    'empty': (128, 128, 128),    # Siva
+    'start': (50, 205, 50),
+    'boss': (220, 20, 60),
+    'combat': (255, 140, 0),
+    'treasure': (255, 215, 0),
+    'shop': (65, 105, 225),
+    'event': (148, 0, 211),
+    'empty': (128, 128, 128),
 }
 
 
 COLOR_BG = (20, 20, 30)
 COLOR_CORRIDOR = (100, 100, 120)
 COLOR_TEXT = (255, 255, 255)
-COLOR_PLAYER = (0, 255, 255)     # Cyan
-COLOR_HP_BAR = (50, 205, 50)     # Green
-COLOR_HP_BG = (100, 0, 0)        # Dark red
+COLOR_PLAYER = (0, 255, 255)
+COLOR_HP_BAR = (50, 205, 50)
+COLOR_HP_BG = (100, 0, 0)
 
 
 class DungeonRenderer:
@@ -79,13 +78,11 @@ class DungeonRenderer:
         return 1
     
     def _grid_to_screen(self, grid_x, grid_y):
-        """Pretvara grid koordinate u screen koordinate."""
         screen_x = self.offset_x + grid_x * (ROOM_SIZE + ROOM_MARGIN)
         screen_y = self.offset_y + grid_y * (ROOM_SIZE + ROOM_MARGIN)
         return int(screen_x), int(screen_y)
     
     def _get_room_by_id(self, room_id):
-        """Pronalazi sobu po ID-u."""
         for room in self.dungeon['rooms']:
             if room['id'] == room_id:
                 return room
@@ -99,10 +96,8 @@ class DungeonRenderer:
         return connected
     
     def render(self):
-        """Renderira cijeli dungeon."""
         self.screen.fill(COLOR_BG)
         
-        # Check game state
         if not self.player.is_alive():
             self._render_game_over()
             return
@@ -111,10 +106,8 @@ class DungeonRenderer:
             self._render_victory()
             return
         
+        title = self.title_font.render("Roguelike Dungeon Generator", True, COLOR_TEXT)
         self.screen.blit(title, (20, 20))
-        
-        subtitle = self.font.render("Prolog + PySwip + Pygame", True, (150, 150, 150))
-        self.screen.blit(subtitle, (20, 55))
         
         self._render_corridors()
         
@@ -135,7 +128,6 @@ class DungeonRenderer:
         self._render_controls()
     
     def _render_corridors(self):
-        """Renderira koridore između soba kao jednostavne linije."""
         line_color = COLOR_CORRIDOR
         line_width = CORRIDOR_WIDTH
         
@@ -153,7 +145,6 @@ class DungeonRenderer:
                 pygame.draw.line(self.screen, line_color, start_pos, end_pos, line_width)
     
     def _render_rooms(self):
-        """Renderira sve sobe."""
         for room in self.dungeon['rooms']:
             x, y = self._grid_to_screen(room['x'], room['y'])
             color = ROOM_COLORS.get(room['type'], ROOM_COLORS['empty'])
@@ -171,7 +162,6 @@ class DungeonRenderer:
             self.screen.blit(type_text, type_rect)
     
     def _render_player(self):
-        """Renderira igrača u trenutnoj sobi."""
         current_room = self._get_room_by_id(self.current_room_id)
         if current_room:
             x, y = self._grid_to_screen(current_room['x'], current_room['y'])
@@ -181,7 +171,6 @@ class DungeonRenderer:
             pygame.draw.circle(self.screen, COLOR_TEXT, center, 15, 2)
     
     def _render_legend(self):
-        """Renderira legendu boja."""
         legend_x = WINDOW_WIDTH - 150
         legend_y = 20
         
@@ -195,7 +184,6 @@ class DungeonRenderer:
             self.screen.blit(text, (legend_x + 30, y + 2))
     
     def _render_room_content(self):
-        """Renderira panel sa sadržajem trenutne sobe."""
         room_contents = self.dungeon.get('room_contents', {})
         content = room_contents.get(self.current_room_id, None)
         
@@ -253,7 +241,6 @@ class DungeonRenderer:
             self.screen.blit(gold_surf, (text_x, text_y + 110))
     
     def _render_controls(self):
-        """Renderira kontrole."""
         controls = [
             "Controls:",
             "WASD / Arrows - Move",
@@ -269,8 +256,6 @@ class DungeonRenderer:
             y += 25
     
     def _render_player_stats(self):
-        """Render HP bar and player stats."""
-        # HP Bar position
         bar_x = WINDOW_WIDTH - 220
         bar_y = WINDOW_HEIGHT - 100
         bar_width = 200
@@ -298,13 +283,11 @@ class DungeonRenderer:
         self.screen.blit(potion_surf, (bar_x, bar_y + 55))
     
     def _render_combat_message(self):
-        """Render combat message."""
         msg_surf = self.title_font.render(self.combat_message, True, (255, 100, 100))
         msg_rect = msg_surf.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 50))
         self.screen.blit(msg_surf, msg_rect)
     
     def _render_game_over(self):
-        """Render game over screen."""
         overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
         overlay.fill((0, 0, 0))
         overlay.set_alpha(200)
@@ -319,7 +302,6 @@ class DungeonRenderer:
         self.screen.blit(hint, hint_rect)
     
     def _render_victory(self):
-        """Render victory screen."""
         overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
         overlay.fill((50, 50, 0))
         overlay.set_alpha(150)
@@ -339,7 +321,6 @@ class DungeonRenderer:
         self.screen.blit(hint, hint_rect)
     
     def move_player(self, direction):
-        """Move player and trigger room events."""
         connected = self._get_connected_rooms(self.current_room_id)
         for room_id, conn_dir in connected:
             if conn_dir == direction:
@@ -349,7 +330,6 @@ class DungeonRenderer:
         return False
     
     def _enter_room(self, room_id):
-        """Handle entering a room - combat, loot, etc."""
         if room_id in self.cleared_rooms:
             return
         

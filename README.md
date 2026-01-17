@@ -45,16 +45,49 @@ Rougelike/
 ## Kako Pokrenuti?
 
 ### 1. Preduvjeti
-Potrebno je imati instaliran [SWI-Prolog](https://www.swi-prolog.org/download/stable) i dodan u sistemski PATH.
 
-### 2. Instalacija ovisnosti
+| Ovisnost | Verzija | Link |
+|----------|---------|------|
+| **SWI-Prolog** | 9.x | [Download](https://www.swi-prolog.org/download/stable) |
+| **Python** | 3.10+ | [Download](https://www.python.org/downloads/) |
+
+> **Napomena**: SWI-Prolog mora biti dodan u sistemski PATH. Instalacija to obično napravi automatski.
+
+### 2. Instalacija Python ovisnosti
+```bash
+pip install -r requirements.txt
+```
+
+Ili ručno:
 ```bash
 pip install pyswip pygame
 ```
 
+#### Linux instalacija SWI-Prologa
+
+**Ubuntu/Debian:**
+```bash
+sudo apt install swi-prolog
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S swi-prolog
+```
+
 ### 3. Pokretanje
 ```bash
+cd Rougelike
 python src/main.py
+```
+
+### 4. Testiranje (opcionalno)
+```bash
+# Python testovi
+python -m pytest tests/ -v
+
+# Prolog testovi
+swipl -s tests/test_dungeon_generator.pl -g run_all_tests -t halt
 ```
 
 ---

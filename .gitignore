@@ -52,6 +52,11 @@ Thumbs.db
 *.nav
 *.snm
 *.vrb
+*.xml
+RadniNacrt.tex
+*.bcf
+*.minted
+*.lol
 
 # Prolog
 *.plt
@@ -60,3 +65,20 @@ Thumbs.db
 *.pyc
 mdfiles/
 predlozak/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+coverage.xml
+tests/
+
+
+# LaTeX additional
+*.run.xml
+_minted*/
+
+# Environment
+.env
+.env.local
