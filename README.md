@@ -8,6 +8,17 @@
 
 ---
 
+## O Projektu
+
+**Autor:** Luka Kukec  
+**Mentor:** doc. dr. sc. Bogdan Okreša Đurić  
+**Fakultet:** Fakultet organizacije i informatike, Sveučilište u Zagrebu  
+**Kolegij:** Deklarativno programiranje
+
+Ovaj projekt je razvijen kao dio projekta "Generiranje razina igre korištenjem gramatike grafova".
+
+---
+
 ## Vizija i Cilj
 
 Ovaj projekt istražuje moć **logičkog programiranja** u domeni proceduralnog generiranja sadržaja (PCG). Za razliku od klasičnih algoritama, koristimo **gramatike grafova** i **ograničenja (constraints)** kako bismo osigurali da svaki generirani dungeon bude:
@@ -29,6 +40,10 @@ Ovaj projekt istražuje moć **logičkog programiranja** u domeni proceduralnog 
 
 ```bash
 Rougelike/
+├── Dokumentacija/
+│   ├── Rad.tex                # Izvorni kod projekta (LaTeX)
+│   ├── Rad.pdf                # Kompilirani rad
+│   └── slike/                 # Slike korištene u dokumentaciji
 ├── prolog/
 │   └── dungeon_generator.pl   # Logika generacije (Graph Grammar)
 ├── src/
@@ -36,9 +51,11 @@ Rougelike/
 │   ├── player.py              # Logika igrača i statistike
 │   ├── renderer.py            # Vizualizacija dungeona i UI
 │   └── prolog_bridge.py       # Komunikacijsko sučelje s Prologom
-├── dokumentacija.md           # Detaljna tehnička dokumentacija
+├── tests/                     # Testovi za Python i Prolog
 └── README.md
 ```
+
+Za detaljan opis teorijske podloge i implementacije, pogledajte [Dokumentacija/Rad.tex](Dokumentacija/Rad.tex).
 
 ---
 
@@ -91,6 +108,10 @@ swipl -s tests/test_dungeon_generator.pl -g run_all_tests -t halt
 ```
 
 ---
+
+## Prikaz Rada
+
+![Primjer generirane tamnice](Dokumentacija/slike/dungeon_example.png)
 
 ## Kontrole i Gameplay
 
