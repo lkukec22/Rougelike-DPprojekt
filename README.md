@@ -1,12 +1,6 @@
 # Roguelike Dungeon Generator
 
-**Deklarativni generator dungeona** koji koristi **Prolog** za inteligentnu generaciju topologije i sadržaja, te **Pygame** za vizualizaciju i gameplay.
-
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
-![Prolog](https://img.shields.io/badge/SWI--Prolog-9.x-red?logo=prolog)
-![License](https://img.shields.io/badge/License-GPL--3.0-green)
-
----
+**Deklarativni generator dungeona** koji koristi **Prolog** za generaciju topologije i sadržaja, te **Pygame** za vizualizaciju i gameplay.
 
 ## O Projektu
 
@@ -15,26 +9,19 @@
 **Fakultet:** Fakultet organizacije i informatike, Sveučilište u Zagrebu  
 **Kolegij:** Deklarativno programiranje
 
-Ovaj projekt je razvijen kao dio projekta "Generiranje razina igre korištenjem gramatike grafova".
-
----
-
 ## Vizija i Cilj
 
-Ovaj projekt istražuje moć **logičkog programiranja** u domeni proceduralnog generiranja sadržaja (PCG). Za razliku od klasičnih algoritama, koristimo **gramatike grafova** i **ograničenja (constraints)** kako bismo osigurali da svaki generirani dungeon bude:
+Ovaj projekt istražuje logičko programiranje u domeni proceduralnog generiranja sadržaja (PCG). Za razliku od klasičnih algoritama, koristimo **gramatike grafova** i **ograničenja (constraints)** kako bismo osigurali da svaki generirani dungeon bude:
 1.  **Strukturno ispravan** (povezan graf, bez izoliranih soba).
 2.  **Balansiran** (pametan raspored neprijatelja, shopova i blaga).
 3.  **Igrabilan** (zajamčen put od starta do bossa).
 
----
 
 ## Tehnološki Stog
 
 -   **SWI-Prolog**: Core motor za generiranje. Koristi dinamičke predikate i backtracking.
 -   **PySwip**: Most koji omogućuje Pythonu da izvršava Prolog upite u stvarnom vremenu.
 -   **Pygame**: Lagan i brz engine za 2D renderiranje i rukovanje unosima igrača.
-
----
 
 ## Struktura Projekta
 
@@ -54,10 +41,8 @@ Rougelike/
 ├── tests/                     # Testovi za Python i Prolog
 └── README.md
 ```
-
 Za detaljan opis teorijske podloge i implementacije, pogledajte [Dokumentacija/Rad.tex](Dokumentacija/Rad.tex).
 
----
 
 ## Kako Pokrenuti?
 
@@ -129,8 +114,6 @@ python -m pytest tests/ -v
 swipl -s tests/test_dungeon_generator.pl -g run_all_tests -t halt
 ```
 
----
-
 ## Prikaz Rada
 
 ![Primjer generirane tamnice](Dokumentacija/slike/dungeon_example.png)
@@ -150,8 +133,6 @@ swipl -s tests/test_dungeon_generator.pl -g run_all_tests -t halt
 - **Loot**: Skupljaj zlato i predmete (napitke) nakon što očistiš sobu.
 - **Pobjeda**: Pronađi i porazi bossa u crvenoj sobi.
 
----
-
 ## Logika Generacije
 
 Sustav koristi **Graph Grammar** pristup:
@@ -166,8 +147,6 @@ Sustav koristi **Graph Grammar** pristup:
 - 🟡 **Treasure**: Bogat loot, obično u slijepim ulicama.
 - 🔵 **Shop**: Sigurna zona za trgovinu.
 - 🟣 **Event**: Nepredviđeni susreti.
-
----
 
 ## Licenca
 Ovaj projekt je licenciran pod **GPL-3.0** licencom.
